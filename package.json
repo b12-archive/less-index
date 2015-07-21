@@ -27,7 +27,9 @@
   ]
 , "license": "MIT"
 , "keywords":
-  [ "…"
+  [ "cli"
+  , "tool"
+  , "…"
   ]
 , "contributors":
   [ "Tomek Wiszniewski <t.wiszniewski@gmail.com>"
