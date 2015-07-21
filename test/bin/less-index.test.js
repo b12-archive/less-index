@@ -1,5 +1,6 @@
 const {resolve} = require('path');
 const {execFile} = require('child_process');
+const {readFileSync} = require('fs');
 
 const tape = require('tape-catch');
 const curry = require('1-liners/curry');
@@ -73,13 +74,35 @@ tape(title('Prints usage'), (is) => {
   });
 });
 
-tape(title('Works.'), (is) => {
+tape(title('Works for a single file.'), (is) => {
+  is.plan(4);
+
   const run = spawn(is, `"${lessIndex}" a`, {cwd});
 
   run.succeeds(
     'succeeds'
   );
 
+  run.stdout.match(
+    /written .*\.less/i,
+    'prints helpful messages'
+  );
+
   run.timeout(500);
-  run.end();
+
+  run.end(() => {
+    let file;
+    is.doesNotThrow(
+      () => file = readFileSync(resolve(cwd, 'a.less'), 'utf-8'),
+      'creates the right file'
+    );
+
+    is.equal(file,
+      ['b', 'c', 'f']
+        .map((name) => `@import "./a/${name}";\n`)
+        .join('')
+      ,
+      '…with the right content'
+    );
+  });
 });
