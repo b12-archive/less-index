@@ -29,12 +29,12 @@ less-index
 
 <p align="center"><a
   title="Graphic by the great Justin Mezzell"
-  href="http://justinmezzell.tumblr.com/post/89957156723"
+  href="http://justinmezzell.tumblr.com/post/57617724502"
   >
   <br/>
   <br/>
   <img
-    src="Readme/….gif"
+    src="Readme/Eye.gif"
     width="400"
     height="300"
   />
