@@ -74,7 +74,7 @@ tape(title('Prints usage'), (is) => {
 });
 
 tape(title('Works.'), (is) => {
-  const run = spawn(is, `${lessIndex} a.js`, {cwd});
+  const run = spawn(is, `"${lessIndex}" a`, {cwd});
 
   run.succeeds(
     'succeeds'
