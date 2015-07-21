@@ -10,8 +10,10 @@ const title = curry(plus)('The CLI tool:  ');
 const lessIndex = resolve(__dirname, '../../module/bin/less-index.js');
 const lessIndexCommand = curry(execFile)(lessIndex);
 
+const cwd = resolve(__dirname, '../mock-cwd');
+
 tape(title('Prints usage'), (is) => {
-  is.plan(8);
+  is.plan(10);
 
   lessIndexCommand([], (error, _, stderr) => {
     is.equal(error && error.code, 1,
@@ -27,6 +29,19 @@ tape(title('Prints usage'), (is) => {
   lessIndexCommand(['--invalid', '--options'], (error, _, stderr) => {
     is.equal(error && error.code, 1,
       '`less-index --invalid --options` fails…'
+    );
+
+    is.ok(
+      /^usage:/i.test(stderr),
+      '…and prints usage to stderr'
+    );
+  });
+
+  lessIndexCommand(['--invalid', '--options', 'a'], {cwd}, (
+    error, _, stderr
+  ) => {
+    is.equal(error && error.code, 1,
+      '`less-index --invalid --options <directory>` fails…'
     );
 
     is.ok(
@@ -57,8 +72,6 @@ tape(title('Prints usage'), (is) => {
     );
   });
 });
-
-const cwd = resolve(__dirname, '../mock-cwd');
 
 tape(title('Works.'), (is) => {
   const run = spawn(is, `${lessIndex} a.js`, {cwd});
