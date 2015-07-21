@@ -1,5 +1,5 @@
 { "name": "less-index"
-, "version": "0.0.0-work-in-progress"
+, "version": "0.0.1"
 , "description": "Create an entry point for a directory of LESS files."
 , "bin":
   { "less-index": "bin/less-index.js"
