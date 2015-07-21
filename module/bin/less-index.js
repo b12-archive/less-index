@@ -19,7 +19,7 @@ if (flags.help) stdout.write([
 
 if (flags.h || flags.help) exit(0);
 
-if (files.length !== 2) {
+if (!files.length) {
   stderr.write(require('./help/usage'));
   exit(1);
 }
