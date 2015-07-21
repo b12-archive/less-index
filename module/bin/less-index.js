@@ -6,6 +6,7 @@ const includes = require('array-includes');
 
 const flags = require('minimist')(argv.slice(2), {boolean: true});
 const directories = flags._;
+delete flags._;
 
 // Print usage
 
