@@ -5,7 +5,7 @@ const {stdout, stderr, exit, argv} = process;
 const includes = require('array-includes');
 
 const flags = require('minimist')(argv.slice(2), {boolean: true});
-const files = flags._;
+const directories = flags._;
 
 // Print usage
 
@@ -22,7 +22,7 @@ else if (flags.h) stdout.write(require('./help/usage'));
 if (flags.h || flags.help) exit(0);
 
 if (
-  !files.length ||
+  !directories.length ||
   Object.keys(flags).some(
     (flag) => !includes(['h', 'help'], flag)
   )
@@ -31,4 +31,38 @@ if (
   exit(1);
 }
 
-// TODO
+// Down to business!
+
+const {resolve, basename} = require('path');
+
+const {readdir, writeFile} = require('fs-promise');
+
+const cwd = process.cwd();
+const lessExtension = /\.less$/;
+const isLess = (filename) => lessExtension.test(filename);
+const stripExtension = (filename) => filename.replace(lessExtension, '');
+
+directories.forEach((directory) => {
+  const directoryName = basename(directory);
+  const absolutePath = function(path) {return resolve(cwd, path);};
+
+  readdir(absolutePath(directory))
+    .then((allFiles) => {
+      const content = allFiles
+        .filter(isLess)
+        .map(stripExtension)
+        .map((module) => (
+          `@import "./${directoryName}/${module}";\n`
+        ))
+        .join('')
+      ;
+
+      const path = `${absolutePath(directory)}.less`;
+
+      return writeFile(path, content)
+        .then(() => stdout.write(`Wrote ${path}.\n`))
+      ;
+    })
+    .then(() => exit(0))
+  ;
+});
