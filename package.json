@@ -1,6 +1,9 @@
 { "name": "less-index"
 , "version": "0.0.0-work-in-progress"
 , "description": "Create an entry point for a directory of LESS files."
+, "bin":
+  { "…": "bin/….js"
+  }
 , "dependencies":
   { "chalk": "^1.1.0"
   , "minimist": "^1.1.1"
