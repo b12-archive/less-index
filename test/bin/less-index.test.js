@@ -1,6 +1,5 @@
 const {resolve} = require('path');
 const {execFile} = require('child_process');
-const {isArray} = Array;
 
 const tape = require('tape-catch');
 const curry = require('1-liners/curry');
@@ -8,15 +7,15 @@ const plus = require('1-liners/plus');
 const spawn = require('tape-spawn');
 
 const title = curry(plus)('The CLI tool:  ');
-const … = resolve(__dirname, '../../module/bin/….js');
-const …Command = curry(execFile)(…);
+const lessIndex = resolve(__dirname, '../../module/bin/less-index.js');
+const lessIndexCommand = curry(execFile)(lessIndex);
 
 tape(title('Prints usage'), (is) => {
   is.plan(8);
 
-  …Command([], (error, _, stderr) => {
+  lessIndexCommand([], (error, _, stderr) => {
     is.equal(error && error.code, 1,
-      '`…` fails…'
+      '`less-index` fails…'
     );
 
     is.ok(
@@ -25,9 +24,9 @@ tape(title('Prints usage'), (is) => {
     );
   });
 
-  …Command(['--invalid', '--options'], (error, _, stderr) => {
+  lessIndexCommand(['--invalid', '--options'], (error, _, stderr) => {
     is.equal(error && error.code, 1,
-      '`… --invalid --options` fails…'
+      '`less-index --invalid --options` fails…'
     );
 
     is.ok(
@@ -36,9 +35,9 @@ tape(title('Prints usage'), (is) => {
     );
   });
 
-  …Command(['-h'], (error, stdout) => {
+  lessIndexCommand(['-h'], (error, stdout) => {
     is.equal(error, null,
-      '`… -h` succeeds…'
+      '`less-index -h` succeeds…'
     );
 
     is.ok(
@@ -47,9 +46,9 @@ tape(title('Prints usage'), (is) => {
     );
   });
 
-  …Command(['--help'], (error, stdout) => {
+  lessIndexCommand(['--help'], (error, stdout) => {
     is.equal(error, null,
-      '`… --help` succeeds…'
+      '`less-index --help` succeeds…'
     );
 
     is.ok(
@@ -61,8 +60,8 @@ tape(title('Prints usage'), (is) => {
 
 const cwd = resolve(__dirname, '../mock-cwd');
 
-tape(title('…'), (is) => {
-  const run = spawn(is, `${…} a.js`, {cwd});
+tape(title('Works.'), (is) => {
+  const run = spawn(is, `${lessIndex} a.js`, {cwd});
 
   run.succeeds(
     'succeeds'
