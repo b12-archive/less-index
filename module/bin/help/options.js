@@ -3,5 +3,6 @@ const {bold} = require('chalk');
 module.exports =
 `  ${bold('OPTIONS')}
 
-    -h  --help   Print a short synopsis (-h) or this help text (--help)
+    -f  --force  Overwrite files without prompting.
+    -h  --help   Display this help text (--help) or short usage info (-h).
 `;

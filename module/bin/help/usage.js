@@ -1,4 +1,4 @@
 export default
-`Usage: …
-   or: … (-h|--help)
+`Usage: less-index [<options>] ...<directory>
+   or: less-index (-h|--help)
 `;
