@@ -2,6 +2,8 @@
 
 const {stdout, stderr, exit, argv} = process;
 
+const includes = require('array-includes');
+
 const flags = require('minimist')(argv.slice(2), {boolean: true});
 const files = flags._;
 
@@ -19,7 +21,12 @@ if (flags.help) stdout.write([
 
 if (flags.h || flags.help) exit(0);
 
-if (!files.length) {
+if (
+  !files.length ||
+  Object.keys(flags).some(
+    (flag) => !includes(['h', 'help'], flag)
+  )
+) {
   stderr.write(require('./help/usage'));
   exit(1);
 }
