@@ -5,7 +5,6 @@ const {readFileSync} = require('fs');
 const tape = require('tape-catch');
 const curry = require('1-liners/curry');
 const plus = require('1-liners/plus');
-const spawn = require('tape-spawn');
 
 const title = curry(plus)('The CLI tool:  ');
 const lessIndex = resolve(__dirname, '../../module/bin/less-index.js');
@@ -75,22 +74,19 @@ tape(title('Prints usage'), (is) => {
 });
 
 tape(title('Works for a single file.'), (is) => {
-  is.plan(4);
+  is.timeoutAfter(500);
 
-  const run = spawn(is, `"${lessIndex}" a`, {cwd});
+  lessIndexCommand(['a'], (error, stdout) => {
+    is.notOk(
+      error,
+      'succeeds'
+    );
 
-  run.succeeds(
-    'succeeds'
-  );
+    is.ok(
+      /written .*\.less/i.test(stdout),
+      'prints helpful messages'
+    );
 
-  run.stdout.match(
-    /written .*\.less/i,
-    'prints helpful messages'
-  );
-
-  run.timeout(500);
-
-  run.end(() => {
     let file;
     is.doesNotThrow(
       () => file = readFileSync(resolve(cwd, 'a.less'), 'utf-8'),
@@ -104,5 +100,7 @@ tape(title('Works for a single file.'), (is) => {
       ,
       '…with the right content'
     );
+
+    is.end();
   });
 });

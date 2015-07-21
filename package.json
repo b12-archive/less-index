@@ -40,7 +40,6 @@
   , "tap-spec": "4.0.2"
   , "tape": "4.0.1"
   , "tape-catch": "1.0.4"
-  , "tape-spawn": "1.4.0"
   }
 , "files":
   [ "/*.js"
