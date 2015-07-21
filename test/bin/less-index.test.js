@@ -8,14 +8,14 @@ const plus = require('1-liners/plus');
 
 const title = curry(plus)('The CLI tool:  ');
 const lessIndex = resolve(__dirname, '../../module/bin/less-index.js');
-const lessIndexCommand = curry(execFile)(lessIndex);
+const $lessIndex = curry(execFile)(lessIndex);
 
 const cwd = resolve(__dirname, '../mock-cwd');
 
 tape(title('Prints usage'), (is) => {
   is.plan(10);
 
-  lessIndexCommand([], (error, _, stderr) => {
+  $lessIndex([], (error, _, stderr) => {
     is.equal(error && error.code, 1,
       '`less-index` fails…'
     );
@@ -26,7 +26,7 @@ tape(title('Prints usage'), (is) => {
     );
   });
 
-  lessIndexCommand(['--invalid', '--options'], (error, _, stderr) => {
+  $lessIndex(['--invalid', '--options'], (error, _, stderr) => {
     is.equal(error && error.code, 1,
       '`less-index --invalid --options` fails…'
     );
@@ -37,7 +37,7 @@ tape(title('Prints usage'), (is) => {
     );
   });
 
-  lessIndexCommand(['--invalid', '--options', 'a'], {cwd}, (
+  $lessIndex(['--invalid', '--options', 'a'], {cwd}, (
     error, _, stderr
   ) => {
     is.equal(error && error.code, 1,
@@ -50,7 +50,7 @@ tape(title('Prints usage'), (is) => {
     );
   });
 
-  lessIndexCommand(['-h'], (error, stdout) => {
+  $lessIndex(['-h'], (error, stdout) => {
     is.equal(error, null,
       '`less-index -h` succeeds…'
     );
@@ -61,7 +61,7 @@ tape(title('Prints usage'), (is) => {
     );
   });
 
-  lessIndexCommand(['--help'], (error, stdout) => {
+  $lessIndex(['--help'], (error, stdout) => {
     is.equal(error, null,
       '`less-index --help` succeeds…'
     );
@@ -76,7 +76,7 @@ tape(title('Prints usage'), (is) => {
 tape(title('Works for a single file.'), (is) => {
   is.timeoutAfter(500);
 
-  lessIndexCommand(['a'], (error, stdout) => {
+  $lessIndex(['a'], (error, stdout) => {
     is.notOk(
       error,
       'succeeds'
