@@ -61,7 +61,7 @@ directories.forEach((directory) => {
       const path = `${absolutePath(directory)}.less`;
 
       return writeFile(path, content)
-        .then(() => stdout.write(`Wrote ${path}.\n`))
+        .then(() => stdout.write(`Written ${path}.\n`))
       ;
     })
     .then(() => exit(0))
