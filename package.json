@@ -16,7 +16,7 @@
   , "coveralls": "npm run coverage && cat ./coverage/lcov.info | coveralls"
   , "develop": "nodangel --ignore node_modules --ignore coverage --exec 'npm run --silent test:lite'"
   , "diffy-package": "format-json package.json > .temp; mve .temp package.json"
-  , "docs": "npm run transpile && echo '[]' | doxie --append \"$(./bin/polydox.js --help)\n\" --inject into Readme.md"
+  , "docs": "npm run transpile && echo '[]' | doxie --append \"$(./bin/less-index.js --help)\n\" --inject into Readme.md"
   , "prepublish": "npm run --silent clean && npm run transpile"
   , "test": "jshint . && npm run test:lite"
   , "test:lite": "npm run test:transpile && node .es5/test.js | tap-spec"
