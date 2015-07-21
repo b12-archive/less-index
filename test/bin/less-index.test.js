@@ -76,7 +76,7 @@ tape(title('Prints usage'), (is) => {
 tape(title('Works for a single file.'), (is) => {
   is.timeoutAfter(500);
 
-  $lessIndex(['a'], (error, stdout) => {
+  $lessIndex(['a'], {cwd}, (error, stdout) => {
     is.notOk(
       error,
       'succeeds'
