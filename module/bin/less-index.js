@@ -9,13 +9,13 @@ const files = flags._;
 
 // Print usage
 
-if (flags.h) stdout.write(require('./help/usage'));
-
 if (flags.help) stdout.write([
   require('./help/synopsis'),
   require('./help/description'),
   require('./help/options'),
 ].join('\n\n'));
+
+else if (flags.h) stdout.write(require('./help/usage'));
 
 // Exit early
 
