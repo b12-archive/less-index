@@ -66,7 +66,43 @@ Usage
 -----
 
 <!-- @doxie.inject start -->
-…
+<!-- Don’t remove or change the comment above – that can break automatic updates. -->
+  SYNOPSIS
+
+    Usage: less-index [<options>] ...<directory>
+       or: less-index (-h|--help)
+
+
+  DESCRIPTION
+
+    Create an entry point for a directory of LESS files.
+
+    Running `less-index ./module` over a directory like this:
+
+        ./module
+        ├── mixins.less
+        ├── settings.less
+        └── styles.less
+
+    …will write the following content:
+
+        @import "./module/mixins";
+        @import "./module/settings";
+        @import "./module/styles";
+
+    …to the file `./module.less`.
+
+    You can then `@import "./module";` from another LESS file and you get the
+    whole lot.
+
+    Files with an extension other than `.less` are ignored.
+
+
+  OPTIONS
+
+    -f  --force  Overwrite files without prompting.
+    -h  --help   Display this help text (--help) or short usage info (-h).
+<!-- Don’t remove or change the comment below – that can break automatic updates. More info at <http://npm.im/doxie.inject>. -->
 <!-- @doxie.inject end -->
 
 
