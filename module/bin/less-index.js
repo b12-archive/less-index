@@ -2,7 +2,7 @@
 
 const {stdout, stderr, exit, argv} = process;
 
-const flags = require('minimist')(argv.slice(2));
+const flags = require('minimist')(argv.slice(2), {boolean: true});
 const files = flags._;
 
 // Print usage
