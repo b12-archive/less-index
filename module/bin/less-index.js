@@ -65,5 +65,8 @@ directories.forEach((directory) => {
       ;
     })
     .then(() => exit(0))
+    .catch((error) => {
+      throw error;
+    })
   ;
 });
