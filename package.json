@@ -40,7 +40,6 @@
   , "opn-cli": "1.0.0"
   , "rimraf": "2.4.2"
   , "tap-spec": "4.0.2"
-  , "tape": "4.0.1"
   , "tape-catch": "1.0.4"
   }
 , "files":
