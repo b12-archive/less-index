@@ -26,7 +26,7 @@ if (flags.h || flags.help) exit(0);
 if (
   !directories.length ||
   Object.keys(flags).some(
-    (flag) => !includes(['h', 'help'], flag)
+    (flag) => !includes(['h', 'help', 'f', 'force'], flag)
   )
 ) {
   stderr.write(require('./help/usage'));
