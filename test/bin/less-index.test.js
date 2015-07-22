@@ -322,3 +322,39 @@ test('Fails when a given directory is not a directory.', (is) => {
     is.end();
   });
 });
+
+test('Skips over empty directories.', (is) => {
+  is.plan(5);
+  is.timeoutAfter(500);
+
+  $lessIndex(['d', 'b'], {cwd}, (error, stdout) => {
+    is.notOk(error,
+      'succeeds'
+    );
+
+    is.ok(
+      /skipping over `d`.*no `\*\.less` files/i.test(stdout),
+      'prints a helpful message'
+    );
+
+    is.throws(
+      () => {statSync(resolve(cwd, 'd.less'));},
+      'doesn’t write a file for the skipped directory'
+    );
+
+    let file;
+    is.doesNotThrow(
+      () => file = readFileSync(resolve(cwd, 'b.less'), 'utf-8'),
+      'creates the other file'
+    );
+
+    is.equal(file,
+      '@import "./b/c";\n',
+      '…with the right content'
+    );
+
+    rimraf(resolve(cwd, 'b.less'),
+      () => is.end()
+    );
+  });
+});
