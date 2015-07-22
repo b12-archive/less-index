@@ -47,6 +47,7 @@
   [ "/*.js"
   , "/module/"
   , "/test/"
+  , "/bin/"
   , "/Readme.md"
   , "/License.md"
   ]
