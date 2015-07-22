@@ -54,10 +54,18 @@ promise.all(directories.map((originalPath) => {
 
   return stat(directoryPath)
     .then(
-      () => ((flags.f || flags.force) ?
-        paths :
+      (stats) => {
+        if (!stats.isDirectory()) {
+          stderr.write(
+            `Fatal: \`${relativeFilePath}\` is not a directory. Make double ` +
+            'sure it’s not a regular file or something.'
+          );
+          exit(1);
+        }
 
-        stat(filePath)
+        else if (flags.f || flags.force) return paths;
+
+        else return stat(filePath)
           .then(
             () => {
               stderr.write(
@@ -69,7 +77,8 @@ promise.all(directories.map((originalPath) => {
 
             () => paths
           )
-      ),
+        ;
+      },
 
       () => {
         stderr.write(
