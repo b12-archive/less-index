@@ -72,7 +72,9 @@ promise.all(directories.map((originalPath) => {
       ),
 
       () => {
-        stderr.write(`Can’t find \`${originalPath}\`. Make sure it’s there.`);
+        stderr.write(
+          `Fatal: Can’t find \`${originalPath}\`. Make sure it’s there.`
+        );
         exit(1);
       }
     )
