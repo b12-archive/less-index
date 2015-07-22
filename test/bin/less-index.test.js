@@ -142,3 +142,11 @@ test(title('Works for multiple directories.'), (is) => {
     );
   });
 });
+
+test.skip('Doesn’t overwrite files by default.');
+
+test.skip('Overwrites files with `--force`.');
+
+test.skip('Works when only some directories exist.');
+
+test.skip('Fails when no directories exist.');
