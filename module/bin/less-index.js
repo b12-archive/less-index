@@ -47,8 +47,23 @@ const stripExtension = (filename) => filename.replace(lessExtension, '');
 promise.all(directories.map((directory) => {
   const directoryName = basename(directory);
   const absolutePath = function(path) {return resolve(cwd, path);};
+  const directoryPath = absolutePath(directory);
+  const filePath = `${directoryPath}.less`;
+  const relativeFilePath = `./${relative(cwd, filePath)}`;
 
-  return readdir(absolutePath(directory))
+  return stat(filePath)
+    .then(
+      () => {
+        stderr.write(
+          `Fatal: \`${relativeFilePath}\` exists. Use \`--force\` ` +
+          'to overwrite.'
+        );
+        exit(1);
+      },
+
+      () => readdir(directoryPath)
+    )
+
     .then((allFiles) => {
       const content = allFiles
         .filter(isLess)
@@ -59,29 +74,14 @@ promise.all(directories.map((directory) => {
         .join('')
       ;
 
-      const path = `${absolutePath(directory)}.less`;
-
-      return stat(path)
-        .then((stats) => {
-          if (stats.isFile()) {
-            stderr.write(
-              `Fatal: \`./${relative(cwd, path)}\` exists. Use \`--force\` ` +
-              'to overwrite.'
-            );
-            exit(1);
-          }
-
-          return writeFile(path, content);
-        })
-        .then(() => {
-          stdout.write(`Written ${path}.\n`);
-        })
-      ;
+      return writeFile(filePath, content);
     })
-    .catch((error) => {
-      throw error;
-    })
+
+    .then(
+      () => {stdout.write(`Written ${relativeFilePath}.\n`);},
+      (error) => {throw error;}
+    )
   ;
 }))
-  .then(() => exit(0))
+  .then(() => {exit(0);})
 ;
