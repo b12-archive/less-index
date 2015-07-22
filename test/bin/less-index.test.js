@@ -143,7 +143,35 @@ test(title('Works for multiple directories.'), (is) => {
   });
 });
 
-test.skip('Doesn’t overwrite files by default.');
+test('Doesn’t overwrite files by default.', (is) => {
+  is.plan(4);
+  is.timeoutAfter(500);
+
+  $lessIndex(['c'], {cwd}, (error, _, stderr) => {
+    is.equal(error && error.code,
+      1,
+      'fails'
+    );
+
+    is.ok(
+      /--force/i.test(stderr),
+      'prints a helpful message to stderr'
+    );
+
+    let file;
+    is.doesNotThrow(
+      () => file = readFileSync(resolve(cwd, 'c.less'), 'utf-8'),
+      'leaves the file…'
+    );
+
+    is.equal(file,
+      'ORIGINAL\n',
+      '…and its content untouched'
+    );
+
+    is.end();
+  });
+});
 
 test.skip('Overwrites files with `--force`.');
 
