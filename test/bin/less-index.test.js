@@ -236,4 +236,31 @@ test('Fails when a directory doesn’t exist.', (is) => {
   });
 });
 
-test.skip('Fails when a given directory is not a directory.');
+test('Fails when a given directory is not a directory.', (is) => {
+  is.plan(4);
+  is.timeoutAfter(500);
+
+  $lessIndex(['b', 'c.less'], {cwd}, (error, _, stderr) => {
+    is.equal(error && error.code,
+      1,
+      'fails'
+    );
+
+    is.ok(
+      /c\.less.*not a directory.*make double sure/i.test(stderr),
+      'prints a helpful message to stderr'
+    );
+
+    is.throws(
+      () => {statSync(resolve(cwd, 'b.less'));},
+      'doesn’t touch the correct file'
+    );
+
+    is.throws(
+      () => {statSync(resolve(cwd, 'c.less.less'));},
+      'doesn’t touch the incorrect file'
+    );
+
+    is.end();
+  });
+});
