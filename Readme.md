@@ -51,9 +51,10 @@ Installation
 ------------
 
 ```sh
-# Globally for a user:
+# Globally – for a user:
 npm install --global less-index
-# …or locally for a project:
+
+# …or locally – for a project:
 npm install --save-dev less-index
 ```
 
