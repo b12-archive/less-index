@@ -69,6 +69,7 @@ const cwd = process.cwd();
 const lessExtension = /\.less$/;
 const isLess = (filename) => lessExtension.test(filename);
 const stripExtension = (filename) => filename.replace(lessExtension, '');
+const WRITTEN = {};  // A poor man’s `Symbol`.
 
 promise.all(directories.map((originalPath) => {
   if (ignore && ignore.test(originalPath)) {
@@ -135,7 +136,7 @@ promise.all(directories.map((originalPath) => {
 
         if (!lessFiles.length) {
           stdout.write(
-            `Skipping over \`${originalPath}\` – no \`*.less\` files inside.`
+            `Skipping over \`${originalPath}\` – no \`*.less\` files inside.\n`
           );
           return null;
         }
@@ -148,11 +149,17 @@ promise.all(directories.map((originalPath) => {
           .join('')
         ;
 
-        return writeFile(filePath, content);
+        return writeFile(filePath, content)
+          .then(() => WRITTEN)
+        ;
       })
 
       .then(
-        () => {stdout.write(`Written \`${relativeFilePath}\`.\n`);},
+        (event) => {
+          if (event === WRITTEN) stdout.write(
+            `Written \`${relativeFilePath}\`.\n`
+          );
+        },
         (error) => {throw error;}
       )
     ;
