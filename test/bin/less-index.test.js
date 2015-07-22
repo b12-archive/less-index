@@ -75,7 +75,7 @@ tape(title('Prints usage'), (is) => {
   });
 });
 
-tape(title('Works for a single file.'), (is) => {
+tape(title('Works for a single directory.'), (is) => {
   const run = spawn(is, `"${lessIndex}" a`, {
     cwd,
     end: false,
@@ -90,7 +90,7 @@ tape(title('Works for a single file.'), (is) => {
 
   run.stdout.match(
     /written .*\.less/i,
-    'prints helpful messages'
+    'prints a helpful message'
   );
 
   run.end(() => {
