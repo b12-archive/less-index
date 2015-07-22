@@ -1,6 +1,6 @@
 const {resolve} = require('path');
 const {execFile} = require('child_process');
-const {readFileSync} = require('fs');
+const {readFileSync, statSync} = require('fs');
 
 const test = require('tape-catch');
 const curry = require('1-liners/curry');
@@ -207,6 +207,45 @@ test('Overwrites files with `--force`.', (is) => {
   });
 });
 
-test.skip('Works when only some directories exist.');
+test('Works when only some directories exist.', (is) => {
+  is.plan(6);
+  is.timeoutAfter(500);
+
+  $lessIndex(['non-existent', 'b'], {cwd}, (error, stdout) => {
+    is.notOk(error,
+      'succeeds'
+    );
+
+    is.ok(
+      /written.*b.less/i.test(stdout),
+      'prints a helpful when writing files'
+    );
+
+    is.ok(
+      /can’t find.*non-existent/i.test(stdout),
+      'prints a helpful for non-existent directories'
+    );
+
+    let file;
+    is.doesNotThrow(
+      () => {file = readFileSync(resolve(cwd, 'b.less'), 'utf-8');},
+      'creates the correct file'
+    );
+
+    is.equal(file,
+      '@import "./b/c";\n',
+      '…with the right content'
+    );
+
+    is.throws(
+      () => {statSync(resolve(cwd, 'non-existent.less'));},
+      'doesn’t touch the incorrect file'
+    );
+
+    rimraf(resolve(cwd, 'b.less'),
+      () => is.end()
+    );
+  });
+});
 
 test.skip('Fails when no directories exist.');
