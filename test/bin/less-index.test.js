@@ -243,6 +243,28 @@ test('Ignores directories with `--ignore`.', (is) => {
   });
 });
 
+test('`less-index --ignore=<bad-regex>` fails.', (is) => {
+  is.plan(3);
+  is.timeoutAfter(500);
+
+  $lessIndex(['--ignore=invalid-regex', 'a'], {cwd}, (error, _, stderr) => {
+    is.equal(error && error.code,
+      1,
+      'fails'
+    );
+
+    is.ok(
+      /badly formed.*make sure.*valid javascript regexp/i.test(stderr),
+      'prints a helpful message'
+    );
+
+    is.throws(
+      () => {statSync(resolve(cwd, 'a.less'));},
+      'doesn’t touch a file'
+    );
+  });
+});
+
 test('Fails when a directory doesn’t exist.', (is) => {
   is.plan(4);
   is.timeoutAfter(500);
