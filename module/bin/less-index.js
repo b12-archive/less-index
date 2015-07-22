@@ -51,22 +51,30 @@ promise.all(directories.map((directory) => {
   const filePath = `${directoryPath}.less`;
   const relativeFilePath = `./${relative(cwd, filePath)}`;
 
-  return ((flags.f || flags.force) ?
-    readdir(directoryPath) :
+  return stat(directoryPath)
+    .then(
+      () => ((flags.f || flags.force) ?
+        readdir(directoryPath) :
 
-    stat(filePath)
-      .then(
-        () => {
-          stderr.write(
-            `Fatal: \`${relativeFilePath}\` exists. Use \`--force\` ` +
-            'to overwrite.'
-          );
-          exit(1);
-        },
+        stat(filePath)
+          .then(
+            () => {
+              stderr.write(
+                `Fatal: \`${relativeFilePath}\` exists. Use \`--force\` ` +
+                'to overwrite.'
+              );
+              exit(1);
+            },
 
-        () => readdir(directoryPath)
-      )
-  )
+            () => readdir(directoryPath)
+          )
+      ),
+
+      () => {
+        stderr.write(`Can’t find \`${directory}\`. Make sure it’s there.`);
+        exit(1);
+      }
+    )
 
     .then((allFiles) => {
       const content = allFiles
