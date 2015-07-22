@@ -332,8 +332,11 @@ test('Skips over empty directories.', (is) => {
       'succeeds'
     );
 
-    is.ok(
-      /skipping over `d`.*no `\*\.less` files/i.test(stdout),
+    is.equal(stdout,
+      [
+        'Skipping over `d` – no `*.less` files inside.\n',
+        'Written `./b.less`.\n',
+      ].join(''),
       'prints a helpful message'
     );
 
