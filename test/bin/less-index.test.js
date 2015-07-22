@@ -6,6 +6,7 @@ const tape = require('tape-catch');
 const curry = require('1-liners/curry');
 const plus = require('1-liners/plus');
 const spawn = require('tape-spawn');
+const rimraf = require('rimraf');
 
 const title = curry(plus)('The CLI tool:  ');
 const lessIndex = resolve(__dirname, '../../module/bin/less-index.js');
@@ -107,6 +108,8 @@ tape(title('Works for a single file.'), (is) => {
       '…with the right content'
     );
 
-    is.end();
+    rimraf(resolve(cwd, 'a.less'),
+      () => is.end()
+    );
   });
 });
