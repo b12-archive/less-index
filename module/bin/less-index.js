@@ -129,8 +129,18 @@ promise.all(directories.map((originalPath) => {
 
     return readdir(directoryPath)
       .then((allFiles) => {
-        const content = allFiles
+        const lessFiles = allFiles
           .filter(isLess)
+        ;
+
+        if (!lessFiles.length) {
+          stdout.write(
+            `Skipping over \`${originalPath}\` – no \`*.less\` files inside.`
+          );
+          return null;
+        }
+
+        const content = lessFiles
           .map(stripExtension)
           .map((module) => (
             `@import "./${directoryName}/${module}";\n`
