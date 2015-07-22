@@ -113,3 +113,43 @@ tape(title('Works for a single directory.'), (is) => {
     );
   });
 });
+
+tape(title('Works for multiple directories.'), (is) => {
+  const run = spawn(is, `"${lessIndex}" a b`, {
+    cwd,
+    end: false,
+  });
+
+  is.plan(4);
+  run.timeout(500);
+
+  run.succeeds(
+    'succeeds'
+  );
+
+  run.stdout.match(
+    /(?:written .*\.less[^]*){2}/i,
+    'prints helpful messages'
+  );
+
+  run.end(() => {
+    let fileA;
+    let fileB;
+    is.doesNotThrow(
+      () => {
+        fileA = readFileSync(resolve(cwd, 'a.less'), 'utf-8');
+        fileB = readFileSync(resolve(cwd, 'b.less'), 'utf-8');
+      },
+      'creates the right files'
+    );
+
+    is.equal(fileB,
+      '@import "./b/c";\n',
+      '…with the right content'
+    );
+
+    rimraf(resolve(cwd, '{a,b}.less'),
+      () => is.end()
+    );
+  });
+});
