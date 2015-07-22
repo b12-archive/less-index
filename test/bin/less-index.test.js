@@ -5,7 +5,6 @@ const {readFileSync} = require('fs');
 const tape = require('tape-catch');
 const curry = require('1-liners/curry');
 const plus = require('1-liners/plus');
-const spawn = require('tape-spawn');
 const rimraf = require('rimraf');
 
 const title = curry(plus)('The CLI tool:  ');
@@ -76,24 +75,19 @@ tape(title('Prints usage'), (is) => {
 });
 
 tape(title('Works for a single directory.'), (is) => {
-  const run = spawn(is, `"${lessIndex}" a`, {
-    cwd,
-    end: false,
-  });
-
   is.plan(4);
-  run.timeout(500);
+  is.timeoutAfter(500);
 
-  run.succeeds(
-    'succeeds'
-  );
+  $lessIndex(['a'], {cwd}, (error, stdout) => {
+    is.notOk(error,
+      'succeeds'
+    );
 
-  run.stdout.match(
-    /written .*\.less/i,
-    'prints a helpful message'
-  );
+    is.ok(
+      /written .*\.less/i.test(stdout),
+      'prints a helpful message'
+    );
 
-  run.end(() => {
     let file;
     is.doesNotThrow(
       () => file = readFileSync(resolve(cwd, 'a.less'), 'utf-8'),
@@ -115,24 +109,19 @@ tape(title('Works for a single directory.'), (is) => {
 });
 
 tape(title('Works for multiple directories.'), (is) => {
-  const run = spawn(is, `"${lessIndex}" a b`, {
-    cwd,
-    end: false,
-  });
-
   is.plan(4);
-  run.timeout(500);
+  is.timeoutAfter(500);
 
-  run.succeeds(
-    'succeeds'
-  );
+  $lessIndex(['a', './b'], {cwd}, (error, stdout) => {
+    is.notOk(error,
+      'succeeds'
+    );
 
-  run.stdout.match(
-    /(?:written .*\.less[^]*){2}/i,
-    'prints helpful messages'
-  );
+    is.ok(
+      /(?:written .*\.less[^]*){2}/i.test(stdout),
+      'prints helpful messages'
+    );
 
-  run.end(() => {
     let fileA;
     let fileB;
     is.doesNotThrow(
