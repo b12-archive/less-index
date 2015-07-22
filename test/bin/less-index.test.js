@@ -85,7 +85,7 @@ test(title('Works for a single directory.'), (is) => {
     );
 
     is.ok(
-      /written .*\.less/i.test(stdout),
+      /written.*`.\/a\.less`/i.test(stdout),
       'prints a helpful message'
     );
 
@@ -119,7 +119,7 @@ test(title('Works for multiple directories.'), (is) => {
     );
 
     is.ok(
-      /(?:written .*\.less[^]*){2}/i.test(stdout),
+      /(?:written.*`.*\.less`[^]*){2}/i.test(stdout),
       'prints helpful messages'
     );
 
@@ -155,7 +155,7 @@ test('Doesn’t overwrite files by default.', (is) => {
     );
 
     is.ok(
-      /--force/i.test(stderr),
+      /`--force`/i.test(stderr),
       'prints a helpful message to stderr'
     );
 
@@ -185,7 +185,7 @@ test('Overwrites files with `--force`.', (is) => {
       );
 
       is.ok(
-        /written .*\.less/i.test(stdout),
+        /written.*`.*\.less`/i.test(stdout),
         'prints a helpful message'
       );
 
@@ -218,7 +218,7 @@ test('Fails when a directory doesn’t exist.', (is) => {
     );
 
     is.ok(
-      /can’t find.*non-existent.*make sure/i.test(stderr),
+      /can’t find.*`non-existent`.*make sure/i.test(stderr),
       'prints a helpful message to stderr'
     );
 
@@ -247,7 +247,7 @@ test('Fails when a given directory is not a directory.', (is) => {
     );
 
     is.ok(
-      /c\.less.*not a directory.*make double sure/i.test(stderr),
+      /`c\.less`.*not a directory.*make double sure/i.test(stderr),
       'prints a helpful message to stderr'
     );
 
