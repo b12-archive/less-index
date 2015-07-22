@@ -207,34 +207,24 @@ test('Overwrites files with `--force`.', (is) => {
   });
 });
 
-test('Works when only some directories exist.', (is) => {
-  is.plan(6);
+test('Fails when a directory doesn’t exist.', (is) => {
+  is.plan(4);
   is.timeoutAfter(500);
 
-  $lessIndex(['non-existent', 'b'], {cwd}, (error, stdout) => {
-    is.notOk(error,
-      'succeeds'
+  $lessIndex(['b', 'non-existent'], {cwd}, (error, _, stderr) => {
+    is.equal(error && error.code,
+      1,
+      'fails'
     );
 
     is.ok(
-      /written.*b.less/i.test(stdout),
-      'prints a helpful when writing files'
+      /can’t find.*non-existent.*make sure/i.test(stderr),
+      'prints a helpful message to stderr'
     );
 
-    is.ok(
-      /can’t find.*non-existent/i.test(stdout),
-      'prints a helpful for non-existent directories'
-    );
-
-    let file;
-    is.doesNotThrow(
-      () => {file = readFileSync(resolve(cwd, 'b.less'), 'utf-8');},
-      'creates the correct file'
-    );
-
-    is.equal(file,
-      '@import "./b/c";\n',
-      '…with the right content'
+    is.throws(
+      () => {statSync(resolve(cwd, 'b.less'));},
+      'doesn’t touch the correct file'
     );
 
     is.throws(
@@ -242,10 +232,8 @@ test('Works when only some directories exist.', (is) => {
       'doesn’t touch the incorrect file'
     );
 
-    rimraf(resolve(cwd, 'b.less'),
-      () => is.end()
-    );
+    is.end();
   });
 });
 
-test.skip('Fails when no directories exist.');
+test.skip('Fails when a given directory is not a directory.');
