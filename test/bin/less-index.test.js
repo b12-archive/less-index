@@ -6,6 +6,7 @@ const test = require('tape-catch');
 const curry = require('1-liners/curry');
 const plus = require('1-liners/plus');
 const rimraf = require('rimraf');
+const {readFile, writeFile} = require('fs-promise');
 
 const title = curry(plus)('The CLI tool:  ');
 const lessIndex = resolve(__dirname, '../../module/bin/less-index.js');
@@ -177,30 +178,32 @@ test('Overwrites files with `--force`.', (is) => {
   is.plan(4);
   is.timeoutAfter(500);
 
-  $lessIndex(['--force', 'c'], {cwd}, (error, stdout) => {
-    is.notOk(error,
-      'succeeds'
-    );
+  readFile(resolve(cwd, 'c.less')).then((original) => {
+    $lessIndex(['--force', 'c'], {cwd}, (error, stdout) => {
+      is.notOk(error,
+        'succeeds'
+      );
 
-    is.ok(
-      /written .*\.less/i.test(stdout),
-      'prints a helpful message'
-    );
+      is.ok(
+        /written .*\.less/i.test(stdout),
+        'prints a helpful message'
+      );
 
-    let file;
-    is.doesNotThrow(
-      () => file = readFileSync(resolve(cwd, 'c.less'), 'utf-8'),
-      'creates the right file'
-    );
+      let file;
+      is.doesNotThrow(
+        () => file = readFileSync(resolve(cwd, 'c.less'), 'utf-8'),
+        'creates the right file'
+      );
 
-    is.equal(file,
-      '@import "./c/d";\n',
-      '…with the right content'
-    );
+      is.equal(file,
+        '@import "./c/d";\n',
+        '…with the right content'
+      );
 
-    rimraf(resolve(cwd, 'c.less'),
-      () => is.end()
-    );
+      writeFile(resolve(cwd, 'c.less'), original)
+        .then(() => {is.end();})
+      ;
+    });
   });
 });
 
