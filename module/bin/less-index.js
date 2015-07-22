@@ -44,17 +44,18 @@ const lessExtension = /\.less$/;
 const isLess = (filename) => lessExtension.test(filename);
 const stripExtension = (filename) => filename.replace(lessExtension, '');
 
-promise.all(directories.map((directory) => {
-  const directoryName = basename(directory);
+promise.all(directories.map((originalPath) => {
   const absolutePath = function(path) {return resolve(cwd, path);};
-  const directoryPath = absolutePath(directory);
+  const directoryPath = absolutePath(originalPath);
   const filePath = `${directoryPath}.less`;
   const relativeFilePath = `./${relative(cwd, filePath)}`;
+
+  const paths = {originalPath, directoryPath, filePath, relativeFilePath};
 
   return stat(directoryPath)
     .then(
       () => ((flags.f || flags.force) ?
-        readdir(directoryPath) :
+        paths :
 
         stat(filePath)
           .then(
@@ -66,34 +67,43 @@ promise.all(directories.map((directory) => {
               exit(1);
             },
 
-            () => readdir(directoryPath)
+            () => paths
           )
       ),
 
       () => {
-        stderr.write(`Can’t find \`${directory}\`. Make sure it’s there.`);
+        stderr.write(`Can’t find \`${originalPath}\`. Make sure it’s there.`);
         exit(1);
       }
     )
-
-    .then((allFiles) => {
-      const content = allFiles
-        .filter(isLess)
-        .map(stripExtension)
-        .map((module) => (
-          `@import "./${directoryName}/${module}";\n`
-        ))
-        .join('')
-      ;
-
-      return writeFile(filePath, content);
-    })
-
-    .then(
-      () => {stdout.write(`Written ${relativeFilePath}.\n`);},
-      (error) => {throw error;}
-    )
   ;
-}))
-  .then(() => {exit(0);})
-;
+})).then((pathObjects) => {
+
+  promise.all(pathObjects.map(({
+    originalPath, directoryPath, filePath, relativeFilePath
+  }) => {
+    const directoryName = basename(originalPath);
+
+    return readdir(directoryPath)
+      .then((allFiles) => {
+        const content = allFiles
+          .filter(isLess)
+          .map(stripExtension)
+          .map((module) => (
+            `@import "./${directoryName}/${module}";\n`
+          ))
+          .join('')
+        ;
+
+        return writeFile(filePath, content);
+      })
+
+      .then(
+        () => {stdout.write(`Written ${relativeFilePath}.\n`);},
+        (error) => {throw error;}
+      )
+    ;
+  }))
+    .then(() => {exit(0);})
+  ;
+});
