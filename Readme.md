@@ -101,8 +101,14 @@ Usage
 
   OPTIONS
 
-    -f  --force  Overwrite files without prompting.
-    -h  --help   Display this help text (--help) or short usage info (-h).
+    -f,  --force
+        Overwrite files without prompting.
+
+    -i <regex>,  --ignore=<regex>
+        Ignore directories matching <regex>.
+
+    -h,  --help
+        Display this help text (--help) or short usage info (-h).
 <!-- Don’t remove or change the comment below – that can break automatic updates. More info at <http://npm.im/doxie.inject>. -->
 <!-- @doxie.inject end -->
 
