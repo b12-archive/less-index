@@ -207,6 +207,42 @@ test('Overwrites files with `--force`.', (is) => {
   });
 });
 
+test('Ignores directories with `--ignore`.', (is) => {
+  is.plan(5);
+  is.timeoutAfter(500);
+
+  $lessIndex(['--ignore=/a/', 'a', 'b'], {cwd}, (error, stdout) => {
+    is.notOk(error,
+      'succeeds'
+    );
+
+    is.ok(
+      /ignored.*`a`/i.test(stdout),
+      'prints a helpful message'
+    );
+
+    is.throws(
+      () => {statSync(resolve(cwd, 'a.less'));},
+      'doesn’t touch the ignored file'
+    );
+
+    let file;
+    is.doesNotThrow(
+      () => file = readFileSync(resolve(cwd, 'b.less'), 'utf-8'),
+      'creates the right file'
+    );
+
+    is.equal(file,
+      '@import "./b/c";\n',
+      '…with the right content'
+    );
+
+    rimraf(resolve(cwd, 'b.less'),
+      () => is.end()
+    );
+  });
+});
+
 test('Fails when a directory doesn’t exist.', (is) => {
   is.plan(4);
   is.timeoutAfter(500);
