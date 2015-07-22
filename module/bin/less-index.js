@@ -35,9 +35,9 @@ if (
 
 // Down to business!
 
-const {resolve, basename} = require('path');
+const {resolve, basename, relative} = require('path');
 
-const {readdir, writeFile} = require('fs-promise');
+const {readdir, writeFile, stat} = require('fs-promise');
 
 const cwd = process.cwd();
 const lessExtension = /\.less$/;
@@ -61,8 +61,21 @@ promise.all(directories.map((directory) => {
 
       const path = `${absolutePath(directory)}.less`;
 
-      return writeFile(path, content)
-        .then(() => stdout.write(`Written ${path}.\n`))
+      return stat(path)
+        .then((stats) => {
+          if (stats.isFile()) {
+            stderr.write(
+              `Fatal: \`./${relative(cwd, path)}\` exists. Use \`--force\` ` +
+              'to overwrite.'
+            );
+            exit(1);
+          }
+
+          return writeFile(path, content);
+        })
+        .then(() => {
+          stdout.write(`Written ${path}.\n`);
+        })
       ;
     })
     .catch((error) => {
