@@ -5,7 +5,7 @@
   { "less-index": "bin/less-index.js"
   }
 , "dependencies":
-  { "array-includes": "tomekwi/array-includes#e583eae"
+  { "array-includes": "^2.0.0"
   , "chalk": "^1.1.0"
   , "es6-promise": "^2.3.0"
   , "fs-promise": "0.3.1"
