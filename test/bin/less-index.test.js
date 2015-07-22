@@ -173,7 +173,36 @@ test('Doesn’t overwrite files by default.', (is) => {
   });
 });
 
-test.skip('Overwrites files with `--force`.');
+test('Overwrites files with `--force`.', (is) => {
+  is.plan(4);
+  is.timeoutAfter(500);
+
+  $lessIndex(['--force', 'c'], {cwd}, (error, stdout) => {
+    is.notOk(error,
+      'succeeds'
+    );
+
+    is.ok(
+      /written .*\.less/i.test(stdout),
+      'prints a helpful message'
+    );
+
+    let file;
+    is.doesNotThrow(
+      () => file = readFileSync(resolve(cwd, 'c.less'), 'utf-8'),
+      'creates the right file'
+    );
+
+    is.equal(file,
+      '@import "./c/d";\n',
+      '…with the right content'
+    );
+
+    rimraf(resolve(cwd, 'c.less'),
+      () => is.end()
+    );
+  });
+});
 
 test.skip('Works when only some directories exist.');
 
