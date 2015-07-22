@@ -3,6 +3,7 @@
 const {stdout, stderr, exit, argv} = process;
 
 const includes = require('array-includes');
+const promise = require('es6-promise').Promise;
 
 const flags = require('minimist')(argv.slice(2), {boolean: true});
 const directories = flags._;
@@ -43,11 +44,11 @@ const lessExtension = /\.less$/;
 const isLess = (filename) => lessExtension.test(filename);
 const stripExtension = (filename) => filename.replace(lessExtension, '');
 
-directories.forEach((directory) => {
+promise.all(directories.map((directory) => {
   const directoryName = basename(directory);
   const absolutePath = function(path) {return resolve(cwd, path);};
 
-  readdir(absolutePath(directory))
+  return readdir(absolutePath(directory))
     .then((allFiles) => {
       const content = allFiles
         .filter(isLess)
@@ -64,9 +65,10 @@ directories.forEach((directory) => {
         .then(() => stdout.write(`Written ${path}.\n`))
       ;
     })
-    .then(() => exit(0))
     .catch((error) => {
       throw error;
     })
   ;
-});
+}))
+  .then(() => exit(0))
+;
