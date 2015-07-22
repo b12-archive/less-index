@@ -2,7 +2,7 @@ const {resolve} = require('path');
 const {execFile} = require('child_process');
 const {readFileSync} = require('fs');
 
-const tape = require('tape-catch');
+const test = require('tape-catch');
 const curry = require('1-liners/curry');
 const plus = require('1-liners/plus');
 const rimraf = require('rimraf');
@@ -13,7 +13,7 @@ const $lessIndex = curry(execFile)(lessIndex);
 
 const cwd = resolve(__dirname, '../mock-cwd');
 
-tape(title('Prints usage'), (is) => {
+test(title('Prints usage'), (is) => {
   is.plan(10);
 
   $lessIndex([], (error, _, stderr) => {
@@ -74,7 +74,7 @@ tape(title('Prints usage'), (is) => {
   });
 });
 
-tape(title('Works for a single directory.'), (is) => {
+test(title('Works for a single directory.'), (is) => {
   is.plan(4);
   is.timeoutAfter(500);
 
@@ -108,7 +108,7 @@ tape(title('Works for a single directory.'), (is) => {
   });
 });
 
-tape(title('Works for multiple directories.'), (is) => {
+test(title('Works for multiple directories.'), (is) => {
   is.plan(4);
   is.timeoutAfter(500);
 
